@@ -1,15 +1,15 @@
 // import * as firebase from 'firebase';
 
-import { firebase } from '@firebase/app';
-import firebaseConfig from './config/firebaseConfig';
+// import { firebase } from '@firebase/app';
+// import firebaseConfig from './config/firebaseConfig';
 
-import 'firebase/database';
-import 'firebase/firestore';
+// import 'firebase/database';
+// import 'firebase/firestore';
 
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
-const todosCollection = db.collection('todos');
-const batch = db.batch();
+// const db = firebase.firestore();
+// const todosCollection = db.collection('todos');
+// const batch = db.batch();
 
-export { db, todosCollection, batch };
+// export { db, todosCollection, batch };
