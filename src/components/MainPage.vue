@@ -105,9 +105,21 @@
             style="display: flex; justify-content: space-between; width: 150px; cursor: pointer"
             v-if="windowWidth > 1100"
           >
-            <span @click="filterOption = 'all'">All</span>
-            <span @click="filterOption = 'active'">Active</span>
-            <span @click="filterOption = 'completed'">Completed</span>
+            <span
+              :class="[{ 'active-filter': filterOption === 'all' }]"
+              @click="filterOption = 'all'"
+              >All
+            </span>
+            <span
+              :class="[{ 'active-filter': filterOption === 'active' }]"
+              @click="filterOption = 'active'"
+              >Active</span
+            >
+            <span
+              :class="[{ 'active-filter': filterOption === 'completed' }]"
+              @click="filterOption = 'completed'"
+              >Completed</span
+            >
           </div>
           <span style="cursor: pointer" @click="deleteAllCompleted">Clear Completed</span>
         </div>
@@ -120,15 +132,15 @@
           v-if="windowWidth < 1100"
         >
           <span :class="[{ 'active-filter': filterOption === 'all' }]" @click="filterOption = 'all'"
-            >All</span
-          >
+            >All
+          </span>
           <span
-            :class="[{ 'active-filter': filterOption.match('active') }]"
+            :class="[{ 'active-filter': filterOption === 'active' }]"
             @click="filterOption = 'active'"
             >Active</span
           >
           <span
-            :class="[{ 'active-filter': filterOption.match('completed') }]"
+            :class="[{ 'active-filter': filterOption === 'completed' }]"
             @click="filterOption = 'completed'"
             >Completed</span
           >
@@ -142,9 +154,9 @@
 </template>
 
 <script>
-import { todosCollection } from '../firebase';
+// import { todosCollection } from '../firebase';
+// import { v4 as uuidv4 } from 'uuid';
 import draggable from 'vuedraggable';
-import { v4 as uuidv4 } from 'uuid';
 export default {
   components: {
     draggable,
@@ -162,58 +174,62 @@ export default {
     };
   },
   mounted() {
-    this.getData();
+    // this.getData();
     window.addEventListener('resize', () => {
       this.windowWidth = window.innerWidth;
     });
   },
   methods: {
-    getData() {
-      this.todoList = [];
-      todosCollection.get().then(querySnapshot =>
-        querySnapshot.forEach(doc => {
-          const record = {
-            id: doc.id,
-            item: doc.data().item,
-            completed: doc.data().completed,
-          };
-
-          this.todoList.push(record);
-        }),
-      );
-    },
-
     /* -------------------------------------------------------------------------- */
     /*                              Firebase Methods                              */
     /* -------------------------------------------------------------------------- */
-    postData(data) {
-      todosCollection.doc(uuidv4()).set(data);
-    },
+    // getData() {
+    //   this.todoList = [];
+    //   todosCollection.get().then(querySnapshot =>
+    //     querySnapshot.forEach(doc => {
+    //       const record = {
+    //         id: doc.id,
+    //         item: doc.data().item,
+    //         completed: doc.data().completed,
+    //       };
 
-    async updateData(record) {
-      record.completed = !record.completed;
-      await todosCollection.doc(record.id).update({ completed: record.completed });
-      // await this.getData();
-    },
-    async deleteData(record) {
-      await todosCollection.doc(record.id).delete();
-    },
+    //       this.todoList.push(record);
+    //     }),
+    //   );
+    // },
+
+    // postData(data) {
+    //   todosCollection.doc(uuidv4()).set(data);
+    // },
+
+    // async updateData(record) {
+    //   record.completed = !record.completed;
+    //   await todosCollection.doc(record.id).update({ completed: record.completed });
+    //   // await this.getData();
+    // },
+    // async deleteData(record) {
+    //   await todosCollection.doc(record.id).delete();
+    // },
 
     /* -------------------------------------------------------------------------- */
     /*                                    CRUD                                    */
     /* -------------------------------------------------------------------------- */
     async addItem() {
       const dt = { item: this.inputs.item, completed: this.inputs.inputChecked };
-      await this.postData(dt);
-
-      await this.getData();
-
+      this.todoList.push(dt);
+      // await this.postData(dt);
+      // await this.getData();
       if (this.inputs.item === '') return alert('Input field is empty');
-      // this.todoList.push(dt);
       this.inputs.item = '';
     },
+
+    async updateData(record) {
+      record.completed = !record.completed;
+      // await todosCollection.doc(record.id).update({ completed: record.completed });
+      // await this.getData();
+    },
     async deleteItem(dt, index) {
-      await this.deleteData(dt);
+      // await this.deleteData(dt);
       this.todoList.splice(index, 1);
     },
     async deleteAllCompleted() {
@@ -222,8 +238,7 @@ export default {
       this.todoList.forEach(async todo => {
         if (todo.completed === false) newTodoList.push(todo);
         if (todo.completed === true) {
-          console.log(`completed item:${JSON.stringify(todo)}`);
-          await this.deleteData(todo).catch(console.error());
+          // await this.deleteData(todo).catch(console.error());
         }
       });
 
